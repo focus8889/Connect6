@@ -1,30 +1,36 @@
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import java.awt.Color;
 import java.awt.GridLayout;
 
 public class Grid {
+    // Main frame.
     private JFrame frame = new JFrame();
-    private JPanel grid = new JPanel();
 
-    private void buttons() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 8; j++) {
-                JButton btn = new JButton();
-                grid.add(btn);
-            }
-        }
-    }
+    // Panels.
+    public JPanel grid = new JPanel();
+    private JPanel menu = new JPanel();
+    // Buttons.
+    private JButton b_save = new JButton("Save");
+    private JButton b_exit = new JButton("Exit");
 
-    public void start() {
-        frame.setVisible(true);
+    public Grid() {
+        LogicProcessing logicProcessing = new LogicProcessing(this);
+        frame.setSize(1000, 800);
         frame.add(grid);
-        grid.setVisible(true);
-        frame.setSize(600, 600);
+        frame.add(menu);
+
+        // Positions and Views.
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         frame.setLayout(null);
-        grid.setBounds(50, 50, 500, 500);
-        grid.setLayout(new GridLayout(9, 8));
-        System.out.println("DOne");
-        buttons();
+        frame.setVisible(true);
+        grid.setLayout(new GridLayout(8, 9));
+        grid.setBounds(50, 50, 700, 650);
+        menu.setBounds(750, 50, 200, 400);
+        menu.setBackground(Color.red);
     }
+
 }
