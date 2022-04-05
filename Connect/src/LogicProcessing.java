@@ -26,7 +26,7 @@ public class LogicProcessing {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("HEllo " + btn.getID());
-                        System.out.println(cells[2].getID());
+                        System.out.println(btn.getColumnId());
                     }
                 });
                 if (j == 0) {
@@ -40,8 +40,7 @@ public class LogicProcessing {
                 grid.grid.add(btn);
                 btn.setID(id);
                 btn.setText(String.valueOf(id));
-
-                System.out.println(id);
+                btn.setColumn(j);
 
             }
         }
