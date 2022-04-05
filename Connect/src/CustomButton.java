@@ -6,6 +6,7 @@ public class CustomButton extends JButton {
     private boolean first;
     private boolean last;
     private int id;
+    private int rowID;
     private int columnID;
 
     // Setters.
@@ -30,8 +31,12 @@ public class CustomButton extends JButton {
         this.id = id;
     }
 
-    public void setColumn(int idColumn) {
-        this.columnID = idColumn;
+    public void setRowID(int idrow) {
+        this.rowID = idrow;
+    }
+
+    public void setColumnID(int idcol) {
+        this.columnID = idcol;
     }
 
     // Getters.
@@ -56,7 +61,11 @@ public class CustomButton extends JButton {
         return this.id;
     }
 
-    public int getColumnId() {
+    public int getRowID() {
+        return this.rowID;
+    }
+
+    public int getcolumnID() {
         return this.columnID;
     }
 }
