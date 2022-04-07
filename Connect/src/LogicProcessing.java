@@ -13,9 +13,6 @@ public class LogicProcessing {
 
     public LogicProcessing(Grid grid) {
         generateBoard(grid);
-        // while (gameOver != true) {
-
-        // }
     }
 
     public void generateBoard(Grid grid) {
@@ -39,9 +36,14 @@ public class LogicProcessing {
                 btn.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        playerMove(btn.getID());
+                        int id = playerMove(btn.getID());
+                        cpuCheck(id);
+                        cells[id].setEnabled(false);
+
                         // System.out.println(btn.getID());
                         System.out.println(btn.getcolumnID());
+                        System.out.println(btn.getRowID());
+                        System.out.println(btn.getPlayer());
                     }
                 });
 
@@ -54,7 +56,7 @@ public class LogicProcessing {
         System.out.println(availableGrids);
     }
 
-    public void playerMove(int id) {
+    public int playerMove(int id) {
         if (availableGrids.contains(id)) {
             this.cells[id].setPlayer();
             this.cells[id].setBackground(Color.red);
@@ -65,16 +67,93 @@ public class LogicProcessing {
                 availableGrids.add(id - 9);
                 System.out.println(availableGrids);
             }
-        }
-        if (!availableGrids.contains(id)) {
-            while (!availableGrids.contains(id)) {
-                id += 9;
-                System.out.println(id);
+        } else {
+            if (!availableGrids.contains(id)) {
+                while (!availableGrids.contains(id)) {
+                    id += 9;
+                    System.out.println(id);
+                }
+                cells[id].setBackground(Color.red);
+                availableGrids.remove(availableGrids.indexOf(id));
+                availableGrids.add(id - 9);
+                System.out.println(availableGrids + " sada");
+
             }
-            cells[id].setBackground(Color.red);
-            availableGrids.remove(availableGrids.indexOf(id));
-            availableGrids.add(id - 9);
+        }
+        cells[id].setPlayer();
+        return id;
+
+    }
+
+    public void cpuCheck(int id) {
+        if (columnCheck(id) == true) {
+            // Block Player.
+            cells[id - 9].setBackground(Color.blue);
+            cells[id - 9].setEnabled(false);
+            cells[id - 9].setCpu();
+            availableGrids.remove(availableGrids.indexOf(id - 9));
+            availableGrids.add(id - 18);
+        }
+        if (rowCheck(id) == true) {
+            rowCheck(id);
+        }
+
+    }
+
+    public boolean columnCheck(int id) {
+        int connects = 0;
+        boolean status = false;
+        // Checking vertically win status.
+        while (true) {
+            try {
+                if (cells[id].getPlayer() == true) {
+                    System.out.println(" Checking " + id);
+                    connects++;
+                    System.out.println(connects + " in a row");
+                    id += 9;
+                    if (connects == 5) {
+                        status = true;
+                        break;
+                    }
+                    continue;
+                } else {
+                    System.out.println("Nothing to check");
+                    break;
+                }
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return status;
+    }
+
+    public boolean rowCheck(int id) {
+        final int initial = id;
+        int row = cells[id].getRowID();
+        int connects = 0;
+        boolean status = false;
+        while (true) {
+            if ((cells[id].getPlayer() == true) & (cells[id].getRowID() == row)) {
+                connects++;
+                id--;
+                if (connects == 4) {
+                    cells[initial + 1].setCpu();
+                    System.out.println(cells[initial + 1].getCpu() + " CPU STATUS");
+                    cells[initial + 1].setBackground(Color.green);
+                    cells[initial + 1].setEnabled(false);
+                    break;
+                }
+
+            }
+            if (cells[id].getPlayer() == false) {
+                break;
+            } else {
+                continue;
+            }
 
         }
+        System.out.println(" Row Check Connects " + connects);
+        return status;
     }
+
 }
