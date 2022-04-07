@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class LogicProcessing {
@@ -38,12 +39,7 @@ public class LogicProcessing {
                     public void actionPerformed(ActionEvent e) {
                         int id = playerMove(btn.getID());
                         cpuCheck(id);
-                        cells[id].setEnabled(false);
-
-                        // System.out.println(btn.getID());
-                        System.out.println(btn.getcolumnID());
-                        System.out.println(btn.getRowID());
-                        System.out.println(btn.getPlayer());
+                        winDetect(id);
                     }
                 });
 
@@ -63,9 +59,7 @@ public class LogicProcessing {
             System.err.println(id);
             if (id >= 10) {
                 availableGrids.remove(availableGrids.indexOf(id));
-                System.out.println(availableGrids + " Removed " + id);
                 availableGrids.add(id - 9);
-                System.out.println(availableGrids);
             }
         } else {
             if (!availableGrids.contains(id)) {
@@ -76,8 +70,6 @@ public class LogicProcessing {
                 cells[id].setBackground(Color.red);
                 availableGrids.remove(availableGrids.indexOf(id));
                 availableGrids.add(id - 9);
-                System.out.println(availableGrids + " sada");
-
             }
         }
         cells[id].setPlayer();
@@ -86,6 +78,7 @@ public class LogicProcessing {
     }
 
     public void cpuCheck(int id) {
+
         if (columnCheck(id) == true) {
             // Block Player.
             cells[id - 9].setBackground(Color.blue);
@@ -94,9 +87,11 @@ public class LogicProcessing {
             availableGrids.remove(availableGrids.indexOf(id - 9));
             availableGrids.add(id - 18);
         }
-        if (rowCheck(id) == true) {
-            rowCheck(id);
-        }
+        // if (rowCheck(id) == true) {
+        // // rowCheck(id);
+        // } else {
+
+        // }
 
     }
 
@@ -104,26 +99,26 @@ public class LogicProcessing {
         int connects = 0;
         boolean status = false;
         // Checking vertically win status.
-        while (true) {
-            try {
-                if (cells[id].getPlayer() == true) {
-                    System.out.println(" Checking " + id);
-                    connects++;
-                    System.out.println(connects + " in a row");
-                    id += 9;
-                    if (connects == 5) {
-                        status = true;
-                        break;
-                    }
-                    continue;
-                } else {
-                    System.out.println("Nothing to check");
-                    break;
-                }
-            } catch (Exception e) {
-                break;
-            }
-        }
+        // while (true) {
+        // try {
+        // if (cells[id].getPlayer() == true) {
+        // // System.out.println(" Checking " + id);
+        // connects++;
+        // // System.out.println(connects + " in a row");
+        // id += 9;
+        // if (connects == 5) {
+        // status = true;
+        // break;
+        // }
+        // continue;
+        // } else {
+        // System.out.println("Nothing to check");
+        // break;
+        // }
+        // } catch (Exception e) {
+        // break;
+        // }
+        // }
         return status;
     }
 
@@ -138,12 +133,10 @@ public class LogicProcessing {
                 id--;
                 if (connects == 4) {
                     cells[initial + 1].setCpu();
-                    System.out.println(cells[initial + 1].getCpu() + " CPU STATUS");
                     cells[initial + 1].setBackground(Color.green);
                     cells[initial + 1].setEnabled(false);
                     break;
                 }
-
             }
             if (cells[id].getPlayer() == false) {
                 break;
@@ -152,8 +145,86 @@ public class LogicProcessing {
             }
 
         }
-        System.out.println(" Row Check Connects " + connects);
         return status;
+    }
+
+    public void cpuMove(boolean first) {
+        if (first == true) {
+            // cells[]
+        }
+    }
+
+    public void winDetect(int clicked) {
+        if (checkVertical(clicked) == true) {
+            System.out.println("Column Win");
+        }
+        if (checkLeft(clicked) == true) {
+            System.out.println("Won Left");
+        }
+        if (checkRight(clicked) == true) {
+            System.out.println("Won Right");
+        }
+    }
+
+    public boolean checkRight(int clicked) {
+        int row = cells[clicked].getRowID();
+        int discs = 0;
+        boolean win = false;
+        while (true) {
+            if ((cells[clicked].getPlayer() == true) & (cells[clicked].getRowID() == row) & (clicked < 72)) {
+                discs++;
+                clicked++;
+                if (discs == 6) {
+                    System.out.println("Win!!! right");
+                    win = true;
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return win;
+    }
+
+    public boolean checkLeft(int clicked) {
+        int row = cells[clicked].getRowID();
+        int discs = 0;
+        boolean win = false;
+        while (true) {
+            if ((cells[clicked].getPlayer() == true) & (cells[clicked].getRowID() == row) & (clicked > 1)) {
+                discs++;
+                clicked--;
+                if (discs == 6) {
+                    System.out.println("Win!!! left");
+                    win = true;
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return win;
+    }
+
+    public boolean checkVertical(int clicked) {
+        boolean win = false;
+        int discs = 0;
+        while (true) {
+            if ((cells[clicked].getPlayer() == true) & (clicked <= 63)) {
+                discs++;
+                clicked += 9;
+
+            } else {
+                break;
+            }
+            if ((discs == 5) & (cells[clicked].getPlayer() == true)) {
+                discs = 6;
+                win = true;
+                break;
+            }
+        }
+
+        return win;
     }
 
 }
