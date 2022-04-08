@@ -23,7 +23,7 @@ public class LogicProcessing {
                 if (j == 0) {
                     btn.setFirst(); // First cell in a row.
                 }
-                if (j == 7) {
+                if (j == 8) {
                     btn.setLast(); // Last cell in a row.
                 }
                 id++;
@@ -40,6 +40,7 @@ public class LogicProcessing {
                         int id = playerMove(btn.getID());
                         cpuCheck(id);
                         winDetect(id);
+                        System.out.println(btn.getLast());
                     }
                 });
 
@@ -138,7 +139,7 @@ public class LogicProcessing {
                     cells[initial + 1].setEnabled(false);
                     break;
                 }
-            } 
+            }
             if (cells[id].getPlayer() == false) {
                 break;
             } else {
@@ -157,6 +158,9 @@ public class LogicProcessing {
         if (checkVertical(clicked) == true) {
         }
         if (horizonatlCheck(clicked) == true) {
+        }
+        if (checkDiagonal(clicked) == true) {
+
         }
     }
 
@@ -185,6 +189,9 @@ public class LogicProcessing {
         int connects = 0;
         while (!cells[id].getPlayer() == false) {
             connects++;
+            if ((id >= 1)) {
+                break;
+            }
             id--;
             if (connects == 6) {
                 System.out.println("Win`");
@@ -193,9 +200,14 @@ public class LogicProcessing {
         }
         if (status == false) {
             connects = 0;
-            id++;
+            if (id > 71) {
+                id++;
+            }
             while (!cells[id].getPlayer() == false) {
                 connects++;
+                if (id <= 72) {
+                    break;
+                }
                 id++;
                 if (connects == 6) {
                     System.out.println("Win1");
@@ -205,6 +217,50 @@ public class LogicProcessing {
 
         }
 
+        return status;
+    }
+
+    public boolean checkDiagonal(int id) {
+        ArrayList<Integer> in = new ArrayList<Integer>();
+        boolean status = false;
+        int connects = 0;
+        while (!cells[id].getPlayer() == false) {
+            connects++;
+            id -= 8;
+            in.add(id);
+            if (cells[id].getLast() == true) {
+                in.clear();
+                break;
+            }
+            if (connects == 6) {
+                System.out.println("Diagonal win detected!");
+                status = true;
+                for (int i = 0; i < in.size(); i++) {
+                    cells[in.get(i)].setBackground(Color.yellow);
+                }
+                break;
+            }
+
+        }
+        if (status == false) {
+            connects = 0;
+            id -= 8;
+            while (!cells[id].getPlayer() == false) {
+                connects++;
+                id += 8;
+                // if (cells[id].getFirst() == true) {
+                // break;
+                // }
+                if (connects == 6) {
+                    status = true;
+                    System.out.println("Win Diagonal man");
+                    for (int i = 0; i < in.size(); i++) {
+                        cells[in.get(i)].setBackground(Color.yellow);
+                    }
+                    break;
+                }
+            }
+        }
         return status;
     }
 }
