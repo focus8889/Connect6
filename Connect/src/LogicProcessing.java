@@ -73,6 +73,7 @@ public class LogicProcessing {
             }
         }
         cells[id].setPlayer();
+        cells[id].setEnabled(false);
         return id;
 
     }
@@ -137,7 +138,7 @@ public class LogicProcessing {
                     cells[initial + 1].setEnabled(false);
                     break;
                 }
-            }
+            } 
             if (cells[id].getPlayer() == false) {
                 break;
             } else {
@@ -149,61 +150,14 @@ public class LogicProcessing {
     }
 
     public void cpuMove(boolean first) {
-        if (first == true) {
-            // cells[]
-        }
+
     }
 
     public void winDetect(int clicked) {
         if (checkVertical(clicked) == true) {
-            System.out.println("Column Win");
         }
-        if (checkLeft(clicked) == true) {
-            System.out.println("Won Left");
+        if (horizonatlCheck(clicked) == true) {
         }
-        if (checkRight(clicked) == true) {
-            System.out.println("Won Right");
-        }
-    }
-
-    public boolean checkRight(int clicked) {
-        int row = cells[clicked].getRowID();
-        int discs = 0;
-        boolean win = false;
-        while (true) {
-            if ((cells[clicked].getPlayer() == true) & (cells[clicked].getRowID() == row) & (clicked < 72)) {
-                discs++;
-                clicked++;
-                if (discs == 6) {
-                    System.out.println("Win!!! right");
-                    win = true;
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        return win;
-    }
-
-    public boolean checkLeft(int clicked) {
-        int row = cells[clicked].getRowID();
-        int discs = 0;
-        boolean win = false;
-        while (true) {
-            if ((cells[clicked].getPlayer() == true) & (cells[clicked].getRowID() == row) & (clicked > 1)) {
-                discs++;
-                clicked--;
-                if (discs == 6) {
-                    System.out.println("Win!!! left");
-                    win = true;
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-        return win;
     }
 
     public boolean checkVertical(int clicked) {
@@ -223,8 +177,34 @@ public class LogicProcessing {
                 break;
             }
         }
-
         return win;
     }
 
+    public boolean horizonatlCheck(int id) {
+        boolean status = false;
+        int connects = 0;
+        while (!cells[id].getPlayer() == false) {
+            connects++;
+            id--;
+            if (connects == 6) {
+                System.out.println("Win`");
+                status = true;
+            }
+        }
+        if (status == false) {
+            connects = 0;
+            id++;
+            while (!cells[id].getPlayer() == false) {
+                connects++;
+                id++;
+                if (connects == 6) {
+                    System.out.println("Win1");
+                    status = true;
+                }
+            }
+
+        }
+
+        return status;
+    }
 }
