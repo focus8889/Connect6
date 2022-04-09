@@ -415,22 +415,20 @@ public class LogicProcessing {
     public void cpuMove(boolean first) {
         if (first == true) {
             Random random = new Random();
-            for (int i = 0; i < 1; i++) {
-                int index = random.nextInt(availableGrids.size());
-                cpuLastCell = availableGrids.get(index);
+            try {
+                for (int i = 0; i < 1; i++) {
+                    int index = random.nextInt(availableGrids.size());
+                    cpuLastCell = availableGrids.get(index);
+                }
+            } catch (Exception e) {
+
             }
             cells[cpuLastCell].setCpu();
-            cells[cpuLastCell].setBackground(Color.blue);
+            cells[cpuLastCell].setBackground(Color.black);
             cpuFirst = false;
         } else {
             if (availableGrids.contains(cpuLastCell - 9)) { // Checking if there available cell to move.
-                if (cpuLastCell - 9 <= 10) {
-                    availableGrids.add(availableGrids.indexOf(cpuLastCell - 18)); // Adding new coordinate.
-                    cpuLastCell = availableGrids.get(availableGrids.indexOf(cpuLastCell - 9));// Setting new Coordinate
-                    availableGrids.remove(availableGrids.indexOf(cpuLastCell - 9)); // Removing used coordinate.
-                }
-                cells[cpuLastCell].setCpu();
-                cells[cpuLastCell].setBackground(Color.blue);
+
             } else { // If the coordinate is not available we are going to new one.
                 cpuMove(true);
             }
