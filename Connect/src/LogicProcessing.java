@@ -7,17 +7,19 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
+import javax.swing.text.AttributeSet.ColorAttribute;
 
 public class LogicProcessing {
     int id = 0;
     ArrayList<Integer> availableGrids = new ArrayList<Integer>();
-    ArrayList<Integer> playerDiscs = new ArrayList<Integer>();
     ArrayList<Integer> cpuDiscs = new ArrayList<Integer>();
     CustomButton[] cells = new CustomButton[73];
-    boolean gameOver = false;
+    int cpuLastCell;
+    boolean cpuFirst = true;
 
     public LogicProcessing(Grid grid) throws FileNotFoundException {
         if (grid.saveLoad == false) {
@@ -54,6 +56,7 @@ public class LogicProcessing {
                         cpuCheck(id);
                         winDetect(id);
                         System.out.println(availableGrids);
+                        System.out.println(cpuDiscs);
 
                         System.out.println(btn.getPlayer());
                     }
@@ -107,10 +110,12 @@ public class LogicProcessing {
             cells[id - 9].setCpu();
             availableGrids.remove(availableGrids.indexOf(id - 9));
             availableGrids.add(id - 18);
+            cpuDiscs.add(id - 9);
         }
         if (rowCheck(id) == true) { // Checking if player has chance to win horizontally.
 
         } else { // Cpu makes move.
+            cpuMove(cpuFirst);
 
         }
 
@@ -163,6 +168,7 @@ public class LogicProcessing {
                     if (availableGrids.contains(id)) {
                         availableGrids.remove(availableGrids.indexOf(id));
                         availableGrids.add(id - 9);
+                        cpuDiscs.add(id);
                     }
                 }
             }
@@ -186,6 +192,12 @@ public class LogicProcessing {
 
         }
         if (noWinner() == true) {
+
+        }
+        for (int i = 0; i < cpuDiscs.size(); i++) {
+            if (horizonatlCheckCPU(cpuDiscs.get(i)) == true) {
+                System.out.println("CPU WON");
+            }
 
         }
     }
@@ -307,6 +319,34 @@ public class LogicProcessing {
         return status;
     }
 
+    // Detecting CPU horizontal discs if 6 then cpu is winner.
+    public boolean horizonatlCheckCPU(int id) {
+        boolean status = false;
+        int row = cells[id].getRowID();
+        int connects = 0;
+        try {
+            while (!cells[id].getCpu() == false) {
+                if (cells[id].getRowID() == row) {
+                    id--;
+                }
+            }
+            id++;
+            while (!cells[id].getCpu() == false) {
+                connects++;
+                System.out.println("CPU" + id);
+                id++;
+                if (connects == 4) {
+                    System.out.println("WinnerCPU");
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+
+        return status;
+    }
+
     public void saveGame() throws IOException {
         File player = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\player.txt");
         File cpu = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\cpu.txt");
@@ -370,5 +410,30 @@ public class LogicProcessing {
             status = true;
         }
         return status;
+    }
+
+    public void cpuMove(boolean first) {
+        if (first == true) {
+            Random random = new Random();
+            for (int i = 0; i < 1; i++) {
+                int index = random.nextInt(availableGrids.size());
+                cpuLastCell = availableGrids.get(index);
+            }
+            cells[cpuLastCell].setCpu();
+            cells[cpuLastCell].setBackground(Color.blue);
+            cpuFirst = false;
+        } else {
+            if (availableGrids.contains(cpuLastCell - 9)) { // Checking if there available cell to move.
+                if (cpuLastCell - 9 <= 10) {
+                    availableGrids.add(availableGrids.indexOf(cpuLastCell - 18)); // Adding new coordinate.
+                    cpuLastCell = availableGrids.get(availableGrids.indexOf(cpuLastCell - 9));// Setting new Coordinate
+                    availableGrids.remove(availableGrids.indexOf(cpuLastCell - 9)); // Removing used coordinate.
+                }
+                cells[cpuLastCell].setCpu();
+                cells[cpuLastCell].setBackground(Color.blue);
+            } else { // If the coordinate is not available we are going to new one.
+                cpuMove(true);
+            }
+        }
     }
 }
