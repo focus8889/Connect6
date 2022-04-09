@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 public class LogicProcessing {
     int id = 0;
     ArrayList<Integer> availableGrids = new ArrayList<Integer>();
@@ -19,7 +21,7 @@ public class LogicProcessing {
 
     public LogicProcessing(Grid grid) throws FileNotFoundException {
         if (grid.saveLoad == false) {
-            // generateBoard(grid);
+            generateBoard(grid);
         } else {
             generateBoard(grid);
             loadGame();
@@ -51,6 +53,8 @@ public class LogicProcessing {
                         int id = playerMove(btn.getID());
                         cpuCheck(id);
                         winDetect(id);
+                        System.out.println(availableGrids);
+
                         System.out.println(btn.getPlayer());
                     }
                 });
@@ -72,6 +76,9 @@ public class LogicProcessing {
             if (id >= 10) {
                 availableGrids.remove(availableGrids.indexOf(id));
                 availableGrids.add(id - 9);
+            }
+            if (id < 10) {
+                availableGrids.remove(availableGrids.indexOf(id)); // Removing first row cells.
             }
         } else {
             if (!availableGrids.contains(id)) {
@@ -176,6 +183,9 @@ public class LogicProcessing {
         if (checkDiagonalRight(clicked) == true) {
         }
         if (checkDiagonalLeft(clicked) == true) {
+
+        }
+        if (noWinner() == true) {
 
         }
     }
@@ -347,10 +357,18 @@ public class LogicProcessing {
 
         }
         for (int i = 0; i < playerAr.length; i++) {
-            
+
             this.cells[Integer.parseInt(playerAr[i])].setPlayer();
             this.cells[Integer.parseInt(playerAr[i])].setBackground(Color.red);
 
         }
+    }
+
+    public boolean noWinner() {
+        boolean status = false;
+        if (availableGrids.size() == 0) {
+            status = true;
+        }
+        return status;
     }
 }
