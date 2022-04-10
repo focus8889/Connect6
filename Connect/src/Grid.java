@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class Grid {
     // Main frame.
-    private JFrame frame = new JFrame();
+    public JFrame frame = new JFrame();
 
     // Panels.
     public JPanel grid = new JPanel();
@@ -81,7 +81,7 @@ public class Grid {
                 try {
                     gamePanel();
                 } catch (FileNotFoundException e1) {
-                    
+
                 }
 
             }
