@@ -52,9 +52,13 @@ public class LogicProcessing {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         int id = playerMove(btn.getID());
+                        System.out.println("Player move");
                         winDetect(id, grid);
+                        System.out.println("Win Detect");
                         cpuCheck(id);
+                        System.out.println("Cpu check");
                         cpuWinDetect(grid);
+                        System.out.println("CPu WIn detect");
                         System.out.println(availableGrids);
                     }
                 });
@@ -403,6 +407,8 @@ public class LogicProcessing {
                 if (connects == 6) {
                     status = true;
                     break;
+                } else {
+                    break;
                 }
             }
         } catch (Exception e) {
@@ -569,19 +575,27 @@ public class LogicProcessing {
 
     public void cpuWinDetect(Grid grid) {
         for (int i = 0; i < cpuDiscs.size(); i++) {
+            System.out.println("1");
             if (horizonatlCheckCPU(cpuDiscs.get(i)) == true) {
+                System.out.println("1");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON horizontal");
                 System.exit(0);
             }
+            System.out.println("1");
             if (checkVerticalCpu(cpuDiscs.get(i)) == true) {
+                System.out.println("2");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON vertical");
                 System.exit(0);
             }
+            System.out.println("1");
             if (checkDiagonalRightCPu(cpuDiscs.get(i)) == true) {
+                System.out.println("3");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON diagonal");
                 System.exit(0);
             }
+            System.out.println("1");
             if (checkDiagonalLeftCpu(cpuDiscs.get(i)) == true) {
+                System.out.println("4");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON diagonal");
                 System.exit(0);
             }
