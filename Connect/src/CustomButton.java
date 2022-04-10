@@ -15,8 +15,16 @@ public class CustomButton extends JButton {
         this.player = true;
     }
 
+    public void setPlayerFalse() {
+        this.player = false;
+    }
+
     public void setCpu() {
         this.cpu = true;
+    }
+
+    public void setCpuFalse() {
+        this.cpu = false;
     }
 
     public void setFirst() {

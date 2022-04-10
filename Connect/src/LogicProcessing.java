@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-
 import javax.swing.JOptionPane;
 
 public class LogicProcessing {
@@ -51,15 +50,15 @@ public class LogicProcessing {
                 btn.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        int id = playerMove(btn.getID());
-                        System.out.println("Player move");
-                        winDetect(id, grid);
-                        System.out.println("Win Detect");
-                        cpuCheck(id);
-                        System.out.println("Cpu check");
-                        cpuWinDetect(grid);
-                        System.out.println("CPu WIn detect");
-                        System.out.println(availableGrids);
+                        try {
+                            int id = playerMove(btn.getID());
+                            cpuCheck(id);
+                            cpuWinDetect(grid);
+                            winDetect(id, grid);
+                            System.out.println(availableGrids);
+                        } catch (Exception d) {
+                        }
+
                     }
                 });
 
@@ -75,45 +74,41 @@ public class LogicProcessing {
         if (availableGrids.contains(id)) {
             this.cells[id].setPlayer();
             this.cells[id].setBackground(Color.red);
-            System.err.println(id);
             if (id < 10) {
                 availableGrids.remove(availableGrids.indexOf(id));
             }
             if (id >= 10) {
                 availableGrids.remove(availableGrids.indexOf(id));
-                if (id - 9 > 10) {
-                    availableGrids.add(id - 9);
-                }
-            }
-            // if (id < 10) {
-            // availableGrids.remove(availableGrids.indexOf(id)); // Removing first row
-            // cells.
-            // }
-        } else {
-            if (!availableGrids.contains(id)) {
-                while (!availableGrids.contains(id)) {
-                    id += 9;
-                }
-                cells[id].setBackground(Color.red);
-                availableGrids.remove(availableGrids.indexOf(id));
                 availableGrids.add(id - 9);
+            } else {
+
             }
         }
+        if (!availableGrids.contains(id)) {
+            while (!availableGrids.contains(id)) {
+                id += 9;
+                System.out.println(availableGrids);
+            }
+            cells[id].setBackground(Color.red);
+            availableGrids.remove(availableGrids.indexOf(id));
+            availableGrids.add(id - 9);
+        }
+
         cells[id].setPlayer();
         cells[id].setEnabled(false);
         return id;
-
     }
 
     public void cpuCheck(int id) {
-
         if (columnCheck(id) == true) { // Checking if player has chance to win vertically.
             // Block Player.
             cells[id - 9].setBackground(Color.blue);
             cells[id - 9].setEnabled(false);
             cells[id - 9].setCpu();
             availableGrids.remove(availableGrids.indexOf(id - 9));
-            availableGrids.add(id - 18);
+            if (id - 18 > 1) {
+                availableGrids.add(id - 18);
+            }
             cpuDiscs.add(id - 9);
         }
         if ((rowCheck(id) == false) & (columnCheck(id) == false)) { // Cpu makes move.
@@ -122,7 +117,6 @@ public class LogicProcessing {
         }
         if (rowCheck(id) == true) { // Checking if player has chance to win horizontally.
         }
-
     }
 
     public boolean columnCheck(int id) {
@@ -134,7 +128,7 @@ public class LogicProcessing {
                 if (cells[id].getPlayer() == true) {
                     connects++;
                     id += 9;
-                    if (connects == 5) {
+                    if ((connects == 5) & (id >= 10)) {
                         status = true;
                         break;
                     }
@@ -190,7 +184,22 @@ public class LogicProcessing {
 
     }
 
+    public boolean noWinner() {
+        boolean status = false;
+
+        if (availableGrids.size() == 0) {
+            status = true;
+        }
+        System.out.println(status);
+        return status;
+    }
+
     public void winDetect(int clicked, Grid grid) {
+        if (noWinner() == true) {
+            System.out.println("Drow");
+            JOptionPane.showMessageDialog(grid.frame, "Drow");
+            System.exit(0);
+        }
         if (checkVertical(clicked) == true) {
             JOptionPane.showMessageDialog(grid.frame, "YOU WON vertical");
             System.exit(0);
@@ -207,10 +216,7 @@ public class LogicProcessing {
             JOptionPane.showMessageDialog(grid.frame, "YOU WON Diagonal");
             System.exit(0);
         }
-        if (noWinner() == true) {
-            JOptionPane.showMessageDialog(grid.frame, "Drow");
-            System.exit(0);
-        }
+
     }
 
     public boolean checkVertical(int clicked) {
@@ -234,7 +240,6 @@ public class LogicProcessing {
         } catch (Exception e) {
 
         }
-
         return win;
     }
 
@@ -260,7 +265,6 @@ public class LogicProcessing {
         } catch (Exception e) {
 
         }
-
         return status;
     }
 
@@ -395,13 +399,15 @@ public class LogicProcessing {
         int row = cells[id].getRowID();
         int connects = 0;
         try {
-            while (!cells[id].getCpu() == false) {
+            while (cells[id].getCpu() == true) {
                 if (cells[id].getRowID() == row) {
                     id--;
+                } else {
+                    break;
                 }
             }
             id++;
-            while (!cells[id].getCpu() == false) {
+            while (cells[id].getCpu() == true) {
                 connects++;
                 id++;
                 if (connects == 6) {
@@ -414,7 +420,6 @@ public class LogicProcessing {
         } catch (Exception e) {
 
         }
-
         return status;
     }
 
@@ -439,14 +444,15 @@ public class LogicProcessing {
         } catch (Exception e) {
 
         }
-
         return win;
     }
 
     public void saveGame() throws IOException {
+        // Loading Files.
         File player = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\player.txt");
         File cpu = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\cpu.txt");
         File ava = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\available.txt");
+        // Writing to the files.
         BufferedWriter write = new BufferedWriter(new FileWriter(player, false));
         BufferedWriter writeEn = new BufferedWriter(new FileWriter(cpu, false));
         BufferedWriter av = new BufferedWriter(new FileWriter(ava, false));
@@ -474,9 +480,11 @@ public class LogicProcessing {
     }
 
     public void loadGame() throws FileNotFoundException {
+        // Loading Files.
         File p = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\player.txt");
         File cp = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\cpu.txt");
         File ava = new File("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\savedGame\\available.txt");
+        // Reading Files.
         Scanner player = new Scanner(p);
         Scanner cpu = new Scanner(cp);
         Scanner av = new Scanner(ava);
@@ -519,15 +527,7 @@ public class LogicProcessing {
         for (int i = 0; i < AvailableAr.length; i++) {
             availableGrids.add(Integer.parseInt(AvailableAr[i]));
         }
-        cpuLastCell = Integer.parseInt(AvailableAr[0]);
-    }
-
-    public boolean noWinner() {
-        boolean status = false;
-        if (availableGrids.size() == 0) {
-            status = true;
-        }
-        return status;
+        cpuLastCell = Integer.parseInt(AvailableAr[AvailableAr.length - 1]);
     }
 
     public void cpuMove(boolean first) {
@@ -548,7 +548,9 @@ public class LogicProcessing {
                 cells[cpuLastCell].setEnabled(false);
                 cells[cpuLastCell].setBackground(Color.blue);
                 availableGrids.remove(availableGrids.indexOf(cpuLastCell));
-                availableGrids.add(cpuLastCell - 9);
+                if (cpuLastCell - 9 >= 10) {
+                    availableGrids.add(cpuLastCell - 9);
+                }
                 cpuDiscs.add(cpuLastCell);
                 cpuFirst = false;
 
@@ -556,16 +558,18 @@ public class LogicProcessing {
 
             }
         } else {
-            if ((availableGrids.contains(cpuLastCell - 9)) & (cpuLastCell - 9 >= 10)) { // Checking if there available
-                                                                                        // // cell to move.
-
+            if ((availableGrids.contains(cpuLastCell - 9))) { // Checking if there available
+                                                              // // cell to move.
                 cpuLastCell -= 9;
+                System.out.println(cpuLastCell);
                 cpuDiscs.add(cpuLastCell);
                 cells[cpuLastCell].setCpu();
                 cells[cpuLastCell].setBackground(Color.blue);
                 cells[cpuLastCell].setEnabled(false);
                 availableGrids.remove(availableGrids.indexOf(cpuLastCell));
-                availableGrids.add(cpuLastCell - 9);
+                if (cpuLastCell >= 10) {
+                    availableGrids.add(cpuLastCell - 9);
+                }
                 cpuFirst = false;
             } else { // If the coordinate is not available we are going to new one.
                 cpuMove(true);
@@ -575,30 +579,40 @@ public class LogicProcessing {
 
     public void cpuWinDetect(Grid grid) {
         for (int i = 0; i < cpuDiscs.size(); i++) {
-            System.out.println("1");
             if (horizonatlCheckCPU(cpuDiscs.get(i)) == true) {
-                System.out.println("1");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON horizontal");
                 System.exit(0);
             }
-            System.out.println("1");
             if (checkVerticalCpu(cpuDiscs.get(i)) == true) {
-                System.out.println("2");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON vertical");
                 System.exit(0);
             }
-            System.out.println("1");
             if (checkDiagonalRightCPu(cpuDiscs.get(i)) == true) {
-                System.out.println("3");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON diagonal");
                 System.exit(0);
             }
-            System.out.println("1");
             if (checkDiagonalLeftCpu(cpuDiscs.get(i)) == true) {
-                System.out.println("4");
                 JOptionPane.showMessageDialog(grid.frame, "CPU WON diagonal");
                 System.exit(0);
             }
+        }
+    }
+
+    public void resetGrid() {
+        for (int i = 1; i < cells.length; i++) {
+            if (cells[i].getPlayer() == true) {
+                cells[i].setPlayerFalse();
+                cells[i].setEnabled(true);
+            }
+            if (cells[i].getCpu() == true) {
+                cells[i].setCpuFalse();
+                cells[i].setEnabled(true);
+            }
+            cells[i].setBackground(Color.WHITE);
+        }
+        availableGrids.clear();
+        for (int i = 64; i < 73; i++) {
+            availableGrids.add(i);
         }
     }
 }

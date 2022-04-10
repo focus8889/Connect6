@@ -24,7 +24,7 @@ public class Grid {
     private JPanel start = new JPanel();
     // Buttons.
     private JButton b_save = new JButton("Save");
-    private JButton b_exit = new JButton("Exit");
+    private JButton b_reset = new JButton("Reset");
     private JButton b_play = new JButton("Play");
     private JButton b_cont = new JButton("Continue");
     private Icon icon = new ImageIcon("C:\\Users\\Амир\\Documents\\GitHub\\Connect6\\Connect\\img\\bg.jpg");
@@ -63,6 +63,7 @@ public class Grid {
         title.setFont(new Font("Arial", Font.BOLD, 40));
         b_cont.setFont(new Font("Arial", Font.BOLD, 20));
         b_play.setFont(new Font("Arial", Font.BOLD, 20));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Adding ActionListeners.
         b_play.addActionListener(new ActionListener() {
@@ -98,7 +99,7 @@ public class Grid {
         game.setVisible(true);
         game.add(grid);
         game.add(menu);
-        menu.add(b_exit);
+        menu.add(b_reset);
         menu.add(b_save);
         LogicProcessing logicProcessing = new LogicProcessing(this);
 
@@ -108,7 +109,7 @@ public class Grid {
         grid.setBounds(50, 50, 700, 600);
         game.setBounds(0, 0, 1000, 700);
         menu.setBounds(750, 50, 250, 500);
-        b_exit.setBounds(50, 50, 100, 50);
+        b_reset.setBounds(50, 50, 100, 50);
         b_save.setBounds(50, 110, 100, 50);
         game.setBackground(new Color(187, 239, 242));
         menu.setBackground(new Color(187, 239, 242));
@@ -119,6 +120,12 @@ public class Grid {
                     logicProcessing.saveGame();
                 } catch (IOException e1) {
                 }
+            }
+
+        });
+        b_reset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                logicProcessing.resetGrid();
             }
 
         });
